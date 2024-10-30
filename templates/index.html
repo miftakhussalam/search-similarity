@@ -18,10 +18,10 @@
 
       .search-container {
         text-align: center;
-        background-color: #ffffff;
+        /* background-color: #ffffff; */
         padding: 20px;
         border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
       }
 
       .search-box-container {
@@ -113,7 +113,6 @@
   </head>
   <body>
     <div class="search-container">
-      <h1>Similarity Search Engine</h1>
       <form method="POST" style="display: flex; align-items: center">
         <div class="search-box-container">
           <input
@@ -152,6 +151,7 @@
       function clearSearch() {
         document.getElementById("search-input").value = "";
         document.getElementById("search-input").focus();
+        document.querySelector('.results-container').innerHTML = ''; // Clear the results
       }
     </script>
   </body>
