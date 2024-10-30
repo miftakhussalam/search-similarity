@@ -1,119 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Similarity Search Engine</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+      }
 
-        .search-container {
-            text-align: center;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+      .search-container {
+        text-align: center;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
 
-        .search-box {
-            width: 400px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 24px;
-            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s ease-in-out;
-        }
+      .search-box-container {
+        display: flex;
+        position: relative;
+      }
 
-        .search-box:focus {
-            border-color: #007bff;
-        }
+      .search-box {
+        width: 400px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 24px;
+        box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.3s ease-in-out;
+      }
 
-        .search-button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            border: none;
-            background-color: #007bff;
-            color: #ffffff;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
+      .search-box:focus {
+        border-color: #007bff;
+      }
 
-        .search-button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
+      .clear-button {
+        background: transparent;
+        border: none;
+        color: #007bff;
+        cursor: pointer;
+        font-size: 16px;
+        margin-left: 10px;
+        padding: 10px;
+        position: absolute;
+        right: 0px;
+      }
 
-        .results-container {
-            margin-top: 20px;
-            width: 60%;
-            max-width: 600px;
-        }
+      .clear-button:hover {
+        color: #0056b3;
+      }
 
-        .result-item {
-            border-bottom: 1px solid #ccc;
-            padding: 10px 0;
-            transition: background-color 0.3s ease;
-        }
+      .search-button {
+        padding: 10px 20px;
+        margin: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: #ffffff;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out,
+          transform 0.3s ease-in-out;
+      }
 
-        .result-item:hover {
-            background-color: #f1f1f1;
-        }
+      .search-button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
 
-        .result-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #007bff;
-        }
+      .results-container {
+        margin-top: 20px;
+        width: 60%;
+        max-width: 600px;
+      }
 
-        .result-description {
-            font-size: 14px;
-            color: #333;
-        }
+      .result-item {
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
+        transition: background-color 0.3s ease;
+      }
 
-        .result-score {
-            font-size: 12px;
-            color: #555;
-        }
+      .result-item:hover {
+        background-color: #f1f1f1;
+      }
+
+      .result-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      .result-description {
+        font-size: 14px;
+        color: #333;
+      }
+
+      .result-score {
+        font-size: 12px;
+        color: #555;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="search-container">
-        <h1>Similarity Search Engine</h1>
-        <form method="POST">
-            <input type="text" class="search-box" name="search_query" placeholder="Enter your search term..." value="{{ query }}" required>
-            <br>
-            <button type="submit" class="search-button">Search</button>
-        </form>
+      <h1>Similarity Search Engine</h1>
+      <form method="POST" style="display: flex; align-items: center">
+        <div class="search-box-container">
+          <input
+            type="text"
+            class="search-box"
+            id="search-input"
+            name="search_query"
+            placeholder="Enter your search term..."
+            value="{{ query }}"
+            required
+          />
+          <button type="button" class="clear-button" onclick="clearSearch()">
+            ✖
+          </button>
+        </div>
+        <br />
+        <button type="submit" class="search-button">Search</button>
+      </form>
     </div>
 
     <div class="results-container">
-        {% if query %}
-            <h3>Search results for: "{{ query }}"</h3>
-            {% if results %}
-                {% for result, score in results %}
-                    <div class="result-item">
-                        <div class="result-title">{{ result.title }}</div>
-                        <div class="result-description">{{ result.description }}</div>
-                        <div class="result-score">Score: {{ score|round(3) }}</div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>No results found for "{{ query }}".</p>
-            {% endif %}
-        {% endif %}
+      {% if query %}
+      <h3>Search results for: "{{ query }}"</h3>
+      {% if results %} {% for result, score in results %}
+      <div class="result-item">
+        <div class="result-title">{{ result.title }}</div>
+        <div class="result-description">{{ result.description }}</div>
+        <div class="result-score">Score: {{ score|round(3) }}</div>
+      </div>
+      {% endfor %} {% else %}
+      <p>No results found for "{{ query }}".</p>
+      {% endif %} {% endif %}
     </div>
-</body>
+
+    <script>
+      function clearSearch() {
+        document.getElementById("search-input").value = "";
+        document.getElementById("search-input").focus();
+      }
+    </script>
+  </body>
 </html>
